@@ -1,1 +1,1 @@
-# Obligatorio_SistemasOperativos
+# Obligatorio: Sistemas Operativos
