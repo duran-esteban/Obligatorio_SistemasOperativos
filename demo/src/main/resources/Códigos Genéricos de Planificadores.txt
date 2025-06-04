@@ -1,0 +1,63 @@
+--------------------------------------------------------------------------------
+			     Planificador HRRN:
+--------------------------------------------------------------------------------
+List<Proceso> listaProcesos = obtenerProcesos();
+int tiempoActual = 0;
+
+while (!listaProcesos.isEmpty()) {
+    Proceso mejor = null;
+    double mejorRR = -1;
+
+    for (Proceso p : listaProcesos) {
+        if (p.getTiempoLlegada() <= tiempoActual) {
+            int espera = tiempoActual - p.getTiempoLlegada();
+            double rr = (espera + p.getDuracion()) / (double) p.getDuracion();
+
+            if (rr > mejorRR) {
+                mejorRR = rr;
+                mejor = p;
+            }
+        }
+    }
+
+    if (mejor != null) {
+        ejecutar(mejor);
+        tiempoActual += mejor.getDuracion();
+        listaProcesos.remove(mejor);
+    } else {
+        tiempoActual++; // no hay procesos listos aún
+    }
+}
+
+
+--------------------------------------------------------------------------------
+			     Planificador FCFS:
+--------------------------------------------------------------------------------
+Queue<Proceso> cola = new LinkedList<>();
+// Agregar procesos
+cola.add(new Proceso("P1", tiempoLlegada, duracion));
+
+while (!cola.isEmpty()) {
+    Proceso actual = cola.poll(); // saca el primero
+    ejecutar(actual);
+}
+
+
+--------------------------------------------------------------------------------
+			      Planificador MLQ:
+--------------------------------------------------------------------------------
+Queue<Proceso> alta = new LinkedList<>();
+Queue<Proceso> media = new LinkedList<>();
+Queue<Proceso> baja = new LinkedList<>();
+
+// Supón que ya están llenas
+
+while (!alta.isEmpty() || !media.isEmpty() || !baja.isEmpty()) {
+    if (!alta.isEmpty()) {
+        ejecutar(alta.poll());
+    } else if (!media.isEmpty()) {
+        ejecutar(media.poll());
+    } else {
+        ejecutar(baja.poll());
+    }
+}
