@@ -18,6 +18,7 @@ public class HiloMedico extends Thread {
                 System.out.println("[Médico " +this.getId()+ "]:" + "Atendiendo paciente: " + paciente.getName());
                 Thread.sleep(/* Tiempo que dure la consulta */ 3000);
                 System.out.println("[Médico " +this.getId()+ "]:" + "Consulta finalizada");
+                // Aquí tendría que enviar una señal al paciente y/o al recepcionista para que actualice las colas
             }
             catch (InterruptedException e) {
                 System.out.println("Error por interrupción");
@@ -34,7 +35,7 @@ public class HiloMedico extends Thread {
 
     public void finDeTurno(int escalaReloj, int horasDescanso) {
         // Si no está atendiendo a alguien (está disponible),
-        // Procede a tomarse el palo y dormir por el resto del día
+        // Termina su turno y duerme por el resto del día
         try {
             disponible.acquire();   // wait() a que esté disponible	
             Thread.sleep(escalaReloj * horasDescanso * 1000);

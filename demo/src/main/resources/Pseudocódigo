@@ -1,0 +1,117 @@
+Mutex recepcionistaDisponible = 1
+Mutex [Odontólogo]Disponible = 0
+Mutex [Enfermero]Disponible = 1
+Mutex [Médico]Disponible = 1
+
+Mutex llamadoRegistro = 0
+Mutex llamadoConsulta[Sala] = 0     // Sala = Consultorio Médico 1-2 / Sala Enfermería / Consultorio Odontológico
+Mutex llamadoAsistente = 0
+Mutex finAsistencia = 0
+
+Booleano asistenciaRequerida = FALSO
+
+Sem.Contador pacientesEsperandoRegistro = 0
+Sem.Contador pacientesEsperando[Especialista] = 0   // Especialista = Enfermero / Médico / Odontólogo
+
+
+
+Proceso/Hilo Paciente:
+
+COM
+    // El paciente llega al hospital y espera para registrarse
+    pacientesEsperandoRegistro.signal()
+    recepcionistaDisponible.wait()
+    llamadoRegistro.wait()
+    EnviarInformación(Consulta, Prioridad, Duración)
+    RecibirInformación(Especialista, Sala)
+
+    // Después de registrarse, espera para ser atendido
+    pacientesEsperando[Especialista].signal()
+    [Especialista]Disponible.wait()
+    llamadoConsulta[Sala].wait()
+    RecibirAtenciónMedica()
+FIN
+
+
+Proceso/Hilo Recepcionista:
+
+COM
+    MIENTRAS VERDADERO HACER:
+        pacientesEsperandoRegistro.wait()
+        llamadoRegistro.signal()
+
+        RecibirInformación(Consulta, Prioridad, Duración)
+        Registrar() // Debe comunicarse con el planificador 
+        // y asignar al paciente en la cola correspondiente.
+        // Posiblemente se necesite un mutex para acceder a
+        // las colas, y listas de espera diferentes según
+        // la prioridad, insertados por el planificador
+        SI Consulta == "X, tipo Enfermería"  ENTONCES
+            EnviarInformación(Enfermero, Sala)
+            pacientesEsperando[Enfermero].signal()  
+        SINO SI Consulta == "X, tipo Medicina General" ENTONCES
+            EnviarInformación(Médico, Sala)
+            pacientesEsperando[Médico].signal()
+        SINO SI Consulta == "X, tipo Odontología" ENTONCES
+            EnviarInformación(Odontólogo, Sala)
+            pacientesEsperando[Odontólogo].signal()
+        FIN SI
+
+        recepcionistaDisponible.signal()
+    FIN MIENTRAS
+FIN
+
+
+Proceso/Hilo Enfermero:
+
+COM
+    MIENTRAS VERDADERO HACER:
+        // Al inicio de cada bucle, chequea si
+        // un médico necesita asistencia.
+        SI asistenciaRequerida ENTONCES
+            llamadoAsistente.wait()
+            AsistirMédico(Médico)
+            finAsistencia.wait()
+            enfermeroDisponible.signal()
+            
+        // Si la asistencia no esrequerida, 
+        // espera pacientes de enfermería.
+        SINO
+            pacientesEsperando[Enfermero].wait()
+            llamadoConsulta[Sala Enfermería].signal()
+            AtenderPaciente(Consulta)
+            enfermeroDisponible.signal()
+        FIN SI
+    FIN MIENTRAS
+FIN
+
+
+Proceso/Hilo Médico:
+
+COM
+    MIENTRAS VERDADERO HACER:
+        // Espera pacientes de medicina general y 
+        // llama al enfermero para que lo asista
+        pacientesEsperando[Médico].wait()
+        asistenciaRequerida = VERDADERO
+        llamadoAsistente.signal()
+        enfermeroDisponible.wait()
+
+        llamadoConsulta[Consultorio Médico i].signal()
+        AtenderPaciente(Consulta)
+        finAsistencia.signal()
+        medicoDisponible.signal()
+    FIN MIENTRAS
+FIN
+
+
+Proceso/Hilo Odontólogo:
+
+COM
+    MIENTRAS VERDADERO HACER:
+        pacientesEsperando[Odontólogo].wait()
+        llamadoConsulta[Consultorio Odontológico].signal()
+        AtenderPaciente(Consulta)
+        odontólogoDisponible.signal()
+    FIN MIENTRAS
+FIN

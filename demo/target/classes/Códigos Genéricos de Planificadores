@@ -1,5 +1,5 @@
 --------------------------------------------------------------------------------
-			     Planificador HRRN:
+			                Planificador HRRN:
 --------------------------------------------------------------------------------
 List<Proceso> listaProcesos = obtenerProcesos();
 int tiempoActual = 0;
@@ -31,7 +31,7 @@ while (!listaProcesos.isEmpty()) {
 
 
 --------------------------------------------------------------------------------
-			     Planificador FCFS:
+			                Planificador FCFS:
 --------------------------------------------------------------------------------
 Queue<Proceso> cola = new LinkedList<>();
 // Agregar procesos
@@ -44,7 +44,7 @@ while (!cola.isEmpty()) {
 
 
 --------------------------------------------------------------------------------
-			      Planificador MLQ:
+			                Planificador MLQ:
 --------------------------------------------------------------------------------
 Queue<Proceso> alta = new LinkedList<>();
 Queue<Proceso> media = new LinkedList<>();

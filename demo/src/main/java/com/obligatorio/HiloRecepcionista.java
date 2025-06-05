@@ -33,7 +33,7 @@ public class HiloRecepcionista extends Thread {
 
     public void finDeTurno(int escalaReloj, int horasDescanso) {
         // Si no está registrando a alguien (está disponible),
-        // Procede a tomarse el palo y dormir por el resto del día
+        // Termina su turno y duerme por el resto del día
         try {
             disponible.acquire();   // wait() a que esté disponible	
             Thread.sleep(escalaReloj * horasDescanso * 1000);
