@@ -24,7 +24,7 @@ class Paciente implements Runnable, Comparable<Paciente> {
         atendido = true;
         while (duracion > 0) {
             try {
-                Thread.sleep(500); // equivale a 5 minutos
+                Thread.sleep(1000); // equivale a 5 minutos
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -42,6 +42,15 @@ class Paciente implements Runnable, Comparable<Paciente> {
     @Override
     public int compareTo(Paciente otro) {
         return Integer.compare(this.prioridad, otro.prioridad);
+    }
+
+    public int getHoraLlegada() {
+        return horaLlegada;
+    }
+
+    public void imprimir() {
+        System.out.println("Hora de llegada: " + horaLlegada + ", Paciente: " + nombre + ", Tipo de consulta: " + tipoConsulta +
+                           ", Prioridad: " + prioridad + ", Duración: " + duracion + ", Atendido: " + atendido);
     }
 }
 
