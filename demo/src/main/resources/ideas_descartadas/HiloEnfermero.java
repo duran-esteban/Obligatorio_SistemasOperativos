@@ -1,0 +1,54 @@
+package com.obligatorio;
+
+import java.util.concurrent.Semaphore;
+
+public class HiloEnfermero extends Thread {
+    Semaphore disponible;
+
+    public HiloEnfermero(String identificador) {
+        super(identificador);
+        disponible = new Semaphore(1);
+    }
+
+    // IMPLEMENTACIONES PROVISORIAS, BURDAS, DEL COMPORTAMIENTO GENERAL
+    public boolean atenderPaciente(Thread paciente) {
+        if (/* Condición que tenga que cumplirse para atender a un paciente*/ true) {
+            try {
+                disponible.acquire();   // Equivalente a wait()
+                System.out.println("[Enfermero " + this.getId() + "]:" + "Atendiendo paciente: " + paciente.getName());
+                Thread.sleep(/* Tiempo que dure la consulta */ 3000);
+                System.out.println("[Enfermero " + this.getId() + "]:" + "Consulta finalizada");
+                // Aquí tendría que enviar una señal al paciente y/o al recepcionista para que actualice las colas
+            }
+            catch (InterruptedException e) {
+                System.out.println("Error por interrupción");
+            }
+            finally {
+                disponible.release();   // Equivalente a signal()
+            }
+            return true;
+        }
+        // Si no se cumple la condición para atender al paciente
+        System.out.println("[Enfermero " + this.getId() + "]:" + "No se pudo atender al paciente: " + paciente.getName());
+        return false;
+    }
+
+    public void finDeTurno(int escalaReloj, int horasDescanso) {
+        // Si no está atendiendo a alguien (está disponible),
+        // Termina su turno y duerme por el resto del día
+        try {
+            disponible.acquire();   // wait() a que esté disponible	
+            Thread.sleep(escalaReloj * horasDescanso * 1000);
+        } 
+        catch (InterruptedException e) {
+            System.out.println("Error por interrupción");
+        } 
+        finally {
+            disponible.release();   // signal() para que pueda volver a atender pacientes
+        }
+    }
+
+    public void run() {
+       // Implementación
+    } 
+}
