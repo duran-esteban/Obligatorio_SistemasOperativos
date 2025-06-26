@@ -1,6 +1,6 @@
 package com.obligatorio;
 
-public class Planificador {
+public class MainSimulador {
     // Semáforos, colas y otros atributos
 
     // Implementación ejecutable
