@@ -5,7 +5,7 @@ class Paciente implements Runnable, Comparable<Paciente> {
     private final int horaLlegada;
     private final String tipoConsulta;
     private int prioridad;
-    private int duracion;
+    private int ticksDuracion;
     private boolean atendido = false;
 
     public Paciente(String nombre, int horaLlegada, String tipoConsulta, int prioridad, int duracion) {
@@ -13,22 +13,26 @@ class Paciente implements Runnable, Comparable<Paciente> {
         this.horaLlegada = horaLlegada;
         this.tipoConsulta = tipoConsulta;
         this.prioridad = prioridad;
-        this.duracion = duracion;
+        this.ticksDuracion = duracion;
     }
 
     public void run() {
+        // Avisa que llegó al centro médico
+        System.out.println("[" + RelojSimulado.formatearHora(this.horaLlegada) + "] Ingresó el paciente: " + this.nombre
+                           + ", Tipo de consulta: " + this.tipoConsulta + ", Prioridad: " + this.prioridad
+                           + ", Duración: " + this.ticksDuracion * RelojSimulado.getEquivalenciaTick() + " minutos.");
         
     }
 
     public void atender() {
         atendido = true;
-        while (duracion > 0) {
+        while (ticksDuracion > 0) {
             try {
-                Thread.sleep(1000); // equivale a 5 minutos
+                Thread.sleep(RelojSimulado.getFrecuenciaTick()); // Duerme durante un tick (Por defecto, 1 segundo)
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-            duracion--;
+            ticksDuracion--;
         }
         // se va del centro
     }
@@ -50,7 +54,7 @@ class Paciente implements Runnable, Comparable<Paciente> {
 
     public void imprimir() {
         System.out.println("Hora de llegada: " + horaLlegada + ", Paciente: " + nombre + ", Tipo de consulta: " + tipoConsulta +
-                           ", Prioridad: " + prioridad + ", Duración: " + duracion + ", Atendido: " + atendido);
+                           ", Prioridad: " + prioridad + ", Duración: " + ticksDuracion + ", Atendido: " + atendido);
     }
 }
 

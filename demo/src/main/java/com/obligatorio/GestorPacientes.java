@@ -4,7 +4,10 @@ import java.util.List;
 
 import com.obligatorio.Utils.ManejadorArchivosGenerico;
 
-class GestorPacientes implements Runnable {
+// Esta clase se encarga de procesar el archivo con los pacientes de
+// la simulación e iniciar sus hilos cuando es su hora de llegada
+
+class GestorPacientes extends Thread {
     private final RelojSimulado reloj;
     private final String archivoSimulacion;
     private final List<Paciente> pacientes;
@@ -14,7 +17,6 @@ class GestorPacientes implements Runnable {
         this.archivoSimulacion = archivoSimulacion;
         this.pacientes = new ArrayList<>();
         ProcesarPacientes();
-        imprimirPacientes();
     }
 
     private void ProcesarPacientes() {
@@ -45,29 +47,35 @@ class GestorPacientes implements Runnable {
 
     private void imprimirPacientes() {
         for (Paciente p : pacientes) {
-            p.imprimir();;
+            p.imprimir();
         }
     }   
 
-    @Override
     public void run() {
-        /* 
-        int tiempoAnterior = -1;
         while (!pacientes.isEmpty()) {
-            int ahora = reloj.getTiempoActual();
-            if (ahora != tiempoAnterior) {
-                Iterator<Paciente> it = pacientes.iterator();
-                while (it.hasNext()) {
-                    Paciente p = it.next();
-                    if (p.getHoraLlegada() == ahora) {
-                        new Thread(p).start(); // crear el hilo del paciente
-                        it.remove(); // ya fue creado
-                    }
+            // Espera a que el reloj avance un tick
+            try {
+                reloj.pasoTick.acquire();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } 
+
+            // Revisa si hay pacientes que llegaron en este tick
+            int tiempoActual = reloj.getHoraActual();
+            List<Paciente> bufferPacientesAEliminar = new ArrayList<Paciente>(); // Para evitar ConcurrentModificationException
+            for (Paciente p : pacientes) {
+                if (p.getHoraLlegada() == tiempoActual) {
+                    new Thread(p).start(); // Inicia el hilo del paciente cuando es su hora de llegada
+                    bufferPacientesAEliminar.add(p); // Agrega el paciente al buffer para eliminarlo después
                 }
-                tiempoAnterior = ahora;
             }
+
+            // Elimina los pacientes que ya fueron creados
+            for (Paciente p : bufferPacientesAEliminar) {
+                pacientes.remove(p);
+            }
+            bufferPacientesAEliminar.clear(); // Limpia el buffer para la próxima iteración
         }
-            */
     }
 }
 
