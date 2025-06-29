@@ -5,6 +5,7 @@ class Paciente implements Runnable, Comparable<Paciente> {
     private final int horaLlegada;
     private final String tipoConsulta;
     private int prioridad;
+    private int prioridadOriginal;
     private int ticksDuracion;
     private boolean atendido = false;
 
@@ -21,6 +22,23 @@ class Paciente implements Runnable, Comparable<Paciente> {
         System.out.println("[" + RelojSimulado.formatearHora(this.horaLlegada) + "] Ingresó el paciente: " + this.nombre
                            + ", Tipo de consulta: " + this.tipoConsulta + ", Prioridad: " + this.prioridad
                            + ", Duración: " + this.ticksDuracion * RelojSimulado.getEquivalenciaTick() + " minutos.");
+
+        while (ticksDuracion > 0) {
+            while (prioridad < CentroMedico.getPrioridadMaxActual()) {
+            // Mientras no sea su turno (no tenga la máxima prioridad), espera un tick
+                try {
+                    Thread.sleep(RelojSimulado.getFrecuenciaTick()); // Duerme durante un tick (Por defecto, 1 segundo)
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+            // Si es su turno, atiende
+            if (prioridad >= CentroMedico.getPrioridadMaxActual()) {
+                atender();
+            } 
+            
+        }
+        
         
     }
 
