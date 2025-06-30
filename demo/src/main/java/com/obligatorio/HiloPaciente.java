@@ -11,7 +11,7 @@ class Paciente implements Runnable, Comparable<Paciente> {
     private int prioridadOriginal;
     private int ticksDuracion;      // Ticks restantes para completar la consulta
 
-    private boolean atendido = false;
+    private boolean atendiendo = false;
     private boolean interrumpido = false;
     private boolean vivo = true;
 
@@ -42,6 +42,18 @@ class Paciente implements Runnable, Comparable<Paciente> {
 
     public int getPrioridad() {
         return prioridad;
+    }
+
+    public int getTicksDuracion() {
+        return ticksDuracion;
+    }
+
+    public boolean getEstaVivo() {
+        return vivo;
+    }
+
+    public boolean getAtendiendo() {
+        return atendiendo;
     }
 
     public String getEspecialista() {
@@ -82,7 +94,7 @@ class Paciente implements Runnable, Comparable<Paciente> {
     }
 
     public void recalcularPrioridad(int horaActual) {
-        if (atendido) return;
+        if (atendiendo) return;
 
         int esperaTotal = calcularDiferenciaTiempo(horaActual, horaLlegada);
         int minutosEsperando = calcularDiferenciaTiempo(horaActual, horaUltimaActualizacion);
@@ -124,12 +136,12 @@ class Paciente implements Runnable, Comparable<Paciente> {
     }
 
     public void serAtendido() {
-        atendido = true;
+        atendiendo = true;
         System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
                            " está siendo atendido por: " + this.getEspecialista() +
                            ", Tipo de consulta: " + this.tipoConsulta);
 
-        while (ticksDuracion > 0 && atendido) {
+        while (ticksDuracion > 0 && atendiendo) {
             if (interrumpido) {
                 System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] La consulta del paciente " + this.nombre +
                                    " ha sido interrumpida.");
@@ -178,33 +190,39 @@ class Paciente implements Runnable, Comparable<Paciente> {
                         try {
                             CentroMedico.medico.acquire(); 
                             CentroMedico.enfermero.acquire();
-                            CentroMedico.setPacienteActual("Médico y Enfermero", this);
+                            CentroMedico.añadirPacienteAtendiendo(this);
                             serAtendido();
-                            CentroMedico.setPacienteActual("Médico y Enfermero", null);
+                            CentroMedico.eliminarPacienteAtendiendo(this);
                             CentroMedico.medico.release();
                             CentroMedico.enfermero.release();
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
-                        }
-                        break;
+                        } break;
+
                     case "Enfermero":
                         try {
                             CentroMedico.enfermero.acquire();
-                            CentroMedico.setPacienteActual("Enfermero", this);
+                            CentroMedico.añadirPacienteAtendiendo(this);
                             serAtendido();
-                        } catch (InterruptedException e) {
+                            CentroMedico.eliminarPacienteAtendiendo(this);
+                            CentroMedico.enfermero.release();
+                        } 
+                        catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
-                        }
-                        break;
+                        } break;
+
                     case "Odontólogo":
                         try {
-                            CentroMedico.enfermero.acquire();
-                            CentroMedico.setPacienteActual("Enfermero", this);
+                            CentroMedico.odontologo.acquire();
+                            CentroMedico.añadirPacienteAtendiendo(this);
                             serAtendido();
-                        } catch (InterruptedException e) {
+                            CentroMedico.eliminarPacienteAtendiendo(this);
+                            CentroMedico.odontologo.release();
+                        } 
+                        catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
-                        }
-                        break;
+                        } break;
+
                     case "Desconocido":
                         System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
                                            " no tiene un especialista asignado, no puede ser atendido.");
@@ -212,11 +230,6 @@ class Paciente implements Runnable, Comparable<Paciente> {
                 }
             } 
         }
-    }
-    
-    public void imprimir() {
-        System.out.println("Hora de llegada: " + horaLlegada + ", Paciente: " + nombre + ", Tipo de consulta: " + tipoConsulta +
-                           ", Prioridad: " + prioridad + ", Duración: " + ticksDuracion + ", Atendido: " + atendido);
     }
 }
 

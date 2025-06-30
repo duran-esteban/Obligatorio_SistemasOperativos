@@ -12,12 +12,8 @@ public class MainSimulador {
         GestorPacientes gestor = new GestorPacientes(reloj, 
         "demo\\src\\main\\java\\com\\obligatorio\\Utils\\PacientesSimulación1.txt", centroMedico);
 
+        centroMedico.start();
         gestor.start(); // Inicia el hilo del gestor de pacientes
-        reloj.start(); // Inicia el hilo del reloj simulado
-
-        while (reloj.getHoraActual() < 2000) { // Mientras el reloj no llegue a las 20:00
-            centroMedico.reordenarCola();
-        }
-        centroMedico.pacientesNoAtendidos(); // Imprime los pacientes que no fueron atendidos al finalizar la simulación
+        reloj.start(); // Inicia el hilo del reloj simulado 
     }
 }

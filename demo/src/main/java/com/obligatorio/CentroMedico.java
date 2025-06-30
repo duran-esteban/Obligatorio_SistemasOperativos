@@ -1,9 +1,10 @@
 package com.obligatorio;
 
+import java.util.ArrayList;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.Semaphore;
 
-public class CentroMedico {
+public class CentroMedico extends Thread{
     private static RelojSimulado reloj;
 
     static Semaphore medico;
@@ -12,9 +13,7 @@ public class CentroMedico {
     static boolean odontologoHabilitado;
     
     private final PriorityBlockingQueue<Paciente> colaPacientes;
-    private static Paciente pacienteActualMedico;
-    private static Paciente pacienteActualEnfermero;
-    private static Paciente pacienteActualOdontologo;
+    private static ArrayList<Paciente> pacientesAtendiendo;
     private static int prioridadMaxActual;
     
     // Constructor
@@ -25,9 +24,7 @@ public class CentroMedico {
         odontologo = new Semaphore(odontologos);
         colaPacientes = new PriorityBlockingQueue<>();
         prioridadMaxActual = 0;
-        pacienteActualMedico = null;
-        pacienteActualEnfermero = null;
-        pacienteActualOdontologo = null;
+        pacientesAtendiendo = new ArrayList<>();
 
         if (odontologos > 0) {
             odontologoHabilitado = true;
@@ -45,21 +42,12 @@ public class CentroMedico {
         return colaPacientes;
     }
 
-    public static void setPacienteActual(String especialista, Paciente paciente) {
-        switch (especialista) {
-            case "Médico y Enfermero":
-                pacienteActualMedico = paciente;
-                pacienteActualEnfermero = paciente;
-                break;
-            case "Enfermero":
-                pacienteActualEnfermero = paciente;
-                break;
-            case "Odontólogo":
-                pacienteActualOdontologo = paciente;
-                break;
-            default:
-                System.out.println("Especialista desconocido: " + especialista);
-        }
+    public static void añadirPacienteAtendiendo(Paciente paciente) {
+        pacientesAtendiendo.add(paciente);
+    }
+
+    public static void eliminarPacienteAtendiendo(Paciente paciente) {
+        pacientesAtendiendo.remove(paciente);
     }
 
     // Métodos
@@ -81,16 +69,22 @@ public class CentroMedico {
     }
 
     public void reordenarCola() {
+        // Actualiza la cola de pacientes, recalculando prioridades y eliminando
+        // pacientes que ya no deberían estar (paceintes ya atendidos por completo o fallecidos)
         PriorityBlockingQueue<Paciente> nuevaCola = new PriorityBlockingQueue<>();
         while (!colaPacientes.isEmpty()) {
             Paciente paciente = colaPacientes.poll();
-            paciente.recalcularPrioridad(reloj.getHoraActual());
-            nuevaCola.put(paciente);
+            if (paciente.getTicksDuracion() > 0 && paciente.getEstaVivo()) {
+                paciente.recalcularPrioridad(reloj.getHoraActual());
+                nuevaCola.put(paciente);
+            }
         }
         colaPacientes.clear();
         colaPacientes.addAll(nuevaCola);
 
         actualizarPrioridadMaxActual();
+
+        chequearInterrupcionNuevoPrioritario();
     }
 
     private void actualizarPrioridadMaxActual() {
@@ -100,14 +94,52 @@ public class CentroMedico {
         }
     }
 
-    private void chequearPrioridadIngresoVsActual() {
-        // Si el paciente que ingresa tiene una prioridad mayor a la máxima actual, 
-        // interrumpe la consulta del paciente actual
-        int prioridadPacienteTopCola = colaPacientes.peek().getPrioridad();
-        if (prioridadPacienteTopCola > pacienteActualMedico.getPrioridad()) {
-            pacienteActualMedico.interrumpirConsulta();
+    private void chequearInterrupcionNuevoPrioritario() {
+        if (colaPacientes.isEmpty()) {
+            return;
         }
+        PriorityBlockingQueue<Paciente> copiaCola = new PriorityBlockingQueue<>(this.colaPacientes);
+        int cantidadIteraciones = this.pacientesAtendiendo.size();
+
+        // Toma los primeros X pacientes de la cola (donde X es la cantidad de pacientes que están siendo atendidos)
+        for (int i = 0; i < cantidadIteraciones; i++) {
+            if (!copiaCola.isEmpty()) {
+                Paciente paPrioritario = copiaCola.poll();
+
+                // Si el paciente con mayor prioridad en la cola no está siendo atendido,
+                if (!paPrioritario.getAtendiendo()) {
+                    Paciente paMenosPrioritario = getMinPrioridadPacientesAtendiendo();
+
+                    // y a su vez hay un paciente siendo atendido menos prioritario,
+                    if (paMenosPrioritario !=null && paPrioritario.getPrioridad() < paMenosPrioritario.getPrioridad()) {
+                        
+                        // Interrumple la consulta del paciente menos prioritario,
+                        // lo quita de la lista de atendidos y lo devuelve a la cola de espera
+                        paMenosPrioritario.interrumpirConsulta();
+                        pacientesAtendiendo.remove(paMenosPrioritario);
+                        colaPacientes.add(paMenosPrioritario);
+                    }
+                }
+            }
+        }
+        copiaCola.clear();
     }
+
+    private Paciente getMinPrioridadPacientesAtendiendo() {
+        // Devuelve el paciente con la menor prioridad que está siendo atendido 
+        // (el número más alto, 0 = máxima prioridad, 10 = mínima prioridad)
+        if (pacientesAtendiendo.isEmpty()) {
+            return null; 
+        }
+        Paciente pacienteMenosPrioritario = pacientesAtendiendo.get(0);
+        for (Paciente paciente : pacientesAtendiendo) {
+            if (paciente.getPrioridad() > pacienteMenosPrioritario.getPrioridad()) {
+                pacienteMenosPrioritario = paciente;
+            }
+        }
+        return pacienteMenosPrioritario;
+    }
+    
 
     public void pacientesNoAtendidos() {
         // Imprime los pacientes que no fueron atendidos al finalizar la simulación
@@ -117,6 +149,19 @@ public class CentroMedico {
             ", Hora de llegada: " + RelojSimulado.formatearHora(paciente.getHoraLlegada()) + 
             ", Tipo de consulta: " + paciente.getTipoConsulta() + ")");
         }
+    }
+
+    @Override
+    public void run() {
+        while (reloj.getHoraActual() < 2000) { // Mientras el reloj no llegue a las 20:00
+            reordenarCola();
+            try {
+                Thread.sleep(reloj.getFrecuenciaTick()); // Reordena la cola cada tick
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        pacientesNoAtendidos(); // Imprime los pacientes que no fueron atendidos al finalizar la simulación
     }
 }
 
