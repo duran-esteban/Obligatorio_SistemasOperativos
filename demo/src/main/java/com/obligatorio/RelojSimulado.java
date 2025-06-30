@@ -62,7 +62,7 @@ class RelojSimulado extends Thread {
         return resultado;
     }
 
-    // Loop principal
+    // Bucle principal
     public void run() {
         System.out.println("[" + formatearHora(horaActual) + "] Reloj simulado iniciado. Abre el Centro Médico" );
         while (horaActual < 2000) { // hasta las 20:00

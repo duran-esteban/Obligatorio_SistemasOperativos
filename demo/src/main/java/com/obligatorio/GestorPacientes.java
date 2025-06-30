@@ -40,7 +40,7 @@ class GestorPacientes extends Thread {
                 // Teniendo todos los datos, crea un nuevo objeto Paciente y lo agrega a la lista "pacientes"
                 // Los archivos de simulación tienen a los pacientes ordenados por hora de llegada, 
                 // por lo que la lista mantiene ese orden
-                Paciente paciente = new Paciente(nombre, horaLlegada, tipoConsulta, prioridad, duracion);
+                Paciente paciente = new Paciente(nombre, horaLlegada, tipoConsulta, prioridad, duracion, this.reloj);
                 pacientes.add(paciente);
             }
             else { // Si hay alguna línea mal escrita, avisa por consola 
@@ -65,7 +65,6 @@ class GestorPacientes extends Thread {
             for (Paciente p : pacientes) {
                 if (p.getHoraLlegada() == tiempoActual) {
                     centroMedico.ingresar(p); // Ingresa el paciente al centro médico
-                    new Thread(p).start(); // Inicia el hilo del paciente cuando es su hora de llegada
                     bufferPacientesAEliminar.add(p); // Agrega el paciente al buffer para eliminarlo después
                 }
             }

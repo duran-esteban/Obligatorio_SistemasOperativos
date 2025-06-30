@@ -1,4 +1,5 @@
-0805;Juan;Control estandar;8;3
+0805;Juan;Carnet de salud;8;3
+0805;Marcos;Carnet de salud;8;3
 0820;Ana;Emergencia;2;2
 0845;Luis;Analisis;9;3
-0910;Carla;Carnet de salud;8;2
+0910;Carla;Carnet de salud;8;
