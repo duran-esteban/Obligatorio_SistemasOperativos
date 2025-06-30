@@ -1,0 +1,42 @@
+0835;Paciente1;análisis de orina;9;2
+0855;Paciente2;carné de salud;9;5
+0905;Paciente3;análisis de sangre;9;2
+0915;Paciente4;carné de salud;9;5
+1000;Paciente5;curación;9;2
+1025;Paciente6;análisis de sangre;9;2
+1105;Paciente7;curación;9;2
+1155;Paciente8;carné de salud;9;5
+1230;Paciente9;análisis de sangre;9;2
+1250;Paciente10;análisis de orina;9;2
+1300;Paciente11;emergencia;0;3
+1305;Paciente12;emergencia;0;3
+1305;Paciente13;emergencia;0;3
+1305;Paciente14;emergencia;0;3
+1305;Paciente15;emergencia;0;3
+1310;Paciente16;emergencia;0;3
+1320;Paciente17;urgencia;5;4
+1335;Paciente18;urgencia;5;4
+1345;Paciente19;urgencia;5;4
+1345;Paciente20;urgencia;5;4
+1355;Paciente21;urgencia;5;4
+1400;Paciente22;emergencia;0;3
+1400;Paciente23;emergencia;0;3
+1410;Paciente24;emergencia;0;3
+1415;Paciente25;emergencia;0;3
+1420;Paciente26;emergencia;0;3
+1425;Paciente27;emergencia;0;3
+1425;Paciente28;urgencia;5;4
+1425;Paciente29;urgencia;5;4
+1430;Paciente30;urgencia;5;4
+1430;Paciente31;urgencia;5;4
+1450;Paciente32;urgencia;5;4
+1515;Paciente33;carné de salud;9;5
+1545;Paciente34;análisis de orina;9;2
+1610;Paciente35;análisis de sangre;9;2
+1650;Paciente36;análisis de sangre;9;2
+1700;Paciente37;análisis de sangre;9;2
+1750;Paciente38;curación;9;2
+1815;Paciente39;análisis de sangre;9;2
+1825;Paciente40;carné de salud;9;5
+1915;Paciente41;análisis de orina;9;2
+1955;Paciente42;análisis de orina;9;2

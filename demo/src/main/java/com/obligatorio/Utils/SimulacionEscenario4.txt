@@ -1,0 +1,120 @@
+0810;Paciente1;análisis de orina;9;2
+0815;Paciente2;carné de salud;9;5
+0825;Paciente3;carné de salud;9;5
+0835;Paciente4;curación;9;2
+0835;Paciente5;curación;9;2
+0835;Paciente6;carné de salud;9;5
+0835;Paciente7;curación;9;2
+0840;Paciente8;análisis de sangre;9;2
+0850;Paciente9;análisis de sangre;9;2
+0855;Paciente10;carné de salud;9;5
+0900;Paciente11;curación;9;2
+0930;Paciente12;curación;9;2
+0935;Paciente13;análisis de orina;9;2
+0935;Paciente14;análisis de sangre;9;2
+0940;Paciente15;carné de salud;9;5
+0940;Paciente16;análisis de orina;9;2
+0940;Paciente17;análisis de orina;9;2
+0945;Paciente18;carné de salud;9;5
+0950;Paciente19;curación;9;2
+0950;Paciente20;carné de salud;9;5
+1000;Paciente21;curación;9;2
+1000;Paciente22;análisis de sangre;9;2
+1010;Paciente23;análisis de orina;9;2
+1015;Paciente24;análisis de orina;9;2
+1030;Paciente25;análisis de orina;9;2
+1040;Paciente26;análisis de orina;9;2
+1040;Paciente27;carné de salud;9;5
+1050;Paciente28;análisis de orina;9;2
+1050;Paciente29;curación;9;2
+1055;Paciente30;análisis de sangre;9;2
+1100;Paciente31;análisis de sangre;9;2
+1100;Paciente32;curación;9;2
+1100;Paciente33;análisis de sangre;9;2
+1110;Paciente34;carné de salud;9;5
+1110;Paciente35;curación;9;2
+1115;Paciente36;análisis de sangre;9;2
+1120;Paciente37;curación;9;2
+1130;Paciente38;análisis de orina;9;2
+1150;Paciente39;análisis de sangre;9;2
+1155;Paciente40;carné de salud;9;5
+1200;Paciente41;curación;9;2
+1200;Paciente42;carné de salud;9;5
+1200;Paciente43;análisis de orina;9;2
+1205;Paciente44;curación;9;2
+1210;Paciente45;curación;9;2
+1220;Paciente46;análisis de sangre;9;2
+1220;Paciente47;análisis de sangre;9;2
+1230;Paciente48;carné de salud;9;5
+1230;Paciente49;curación;9;2
+1235;Paciente50;curación;9;2
+1300;Paciente51;carné de salud;9;5
+1305;Paciente52;curación;9;2
+1310;Paciente53;análisis de sangre;9;2
+1320;Paciente54;carné de salud;9;5
+1325;Paciente55;análisis de orina;9;2
+1325;Paciente56;curación;9;2
+1330;Paciente57;carné de salud;9;5
+1335;Paciente58;análisis de sangre;9;2
+1345;Paciente59;análisis de orina;9;2
+1350;Paciente60;carné de salud;9;5
+1400;Paciente61;análisis de orina;9;2
+1400;Paciente62;curación;9;2
+1420;Paciente63;curación;9;2
+1420;Paciente64;carné de salud;9;5
+1430;Paciente65;curación;9;2
+1435;Paciente66;análisis de orina;9;2
+1440;Paciente67;curación;9;2
+1445;Paciente68;carné de salud;9;5
+1455;Paciente69;análisis de orina;9;2
+1455;Paciente70;análisis de orina;9;2
+1510;Paciente71;análisis de orina;9;2
+1525;Paciente72;carné de salud;9;5
+1525;Paciente73;análisis de sangre;9;2
+1530;Paciente74;carné de salud;9;5
+1535;Paciente75;carné de salud;9;5
+1535;Paciente76;análisis de orina;9;2
+1535;Paciente77;análisis de sangre;9;2
+1540;Paciente78;análisis de sangre;9;2
+1545;Paciente79;análisis de sangre;9;2
+1545;Paciente80;análisis de orina;9;2
+1605;Paciente81;análisis de sangre;9;2
+1605;Paciente82;análisis de sangre;9;2
+1610;Paciente83;curación;9;2
+1610;Paciente84;curación;9;2
+1620;Paciente85;análisis de orina;9;2
+1620;Paciente86;curación;9;2
+1635;Paciente87;análisis de sangre;9;2
+1640;Paciente88;curación;9;2
+1645;Paciente89;carné de salud;9;5
+1650;Paciente90;análisis de orina;9;2
+1700;Paciente91;análisis de orina;9;2
+1700;Paciente92;análisis de sangre;9;2
+1705;Paciente93;análisis de sangre;9;2
+1710;Paciente94;análisis de orina;9;2
+1710;Paciente95;análisis de sangre;9;2
+1710;Paciente96;análisis de orina;9;2
+1735;Paciente97;carné de salud;9;5
+1740;Paciente98;carné de salud;9;5
+1745;Paciente99;curación;9;2
+1750;Paciente100;análisis de orina;9;2
+1810;Paciente101;carné de salud;9;5
+1810;Paciente102;carné de salud;9;5
+1815;Paciente103;curación;9;2
+1815;Paciente104;carné de salud;9;5
+1830;Paciente105;curación;9;2
+1835;Paciente106;análisis de sangre;9;2
+1840;Paciente107;análisis de sangre;9;2
+1845;Paciente108;análisis de sangre;9;2
+1845;Paciente109;curación;9;2
+1850;Paciente110;análisis de orina;9;2
+1900;Paciente111;análisis de orina;9;2
+1915;Paciente112;curación;9;2
+1920;Paciente113;curación;9;2
+1925;Paciente114;curación;9;2
+1925;Paciente115;análisis de sangre;9;2
+1935;Paciente116;análisis de sangre;9;2
+1940;Paciente117;carné de salud;9;5
+1940;Paciente118;análisis de sangre;9;2
+1945;Paciente119;curación;9;2
+1950;Paciente120;curación;9;2
