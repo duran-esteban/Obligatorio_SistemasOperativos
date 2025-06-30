@@ -64,7 +64,7 @@ class RelojSimulado extends Thread {
 
     // Bucle principal
     public void run() {
-        System.out.println("[08:00] Reloj simulado iniciado" );
+        ConsolaTXT.imprimirYguardar("[08:00] Reloj simulado iniciado" );
         while (horaActual < 2100) { // sigue corriendo una hora más del límite
             try {
                 Thread.sleep(frecuenciaTick); // Pasa un tick

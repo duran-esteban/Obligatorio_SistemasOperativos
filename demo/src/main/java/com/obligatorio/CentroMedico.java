@@ -85,16 +85,16 @@ public class CentroMedico extends Thread{
     public void ingresar(Paciente paciente) {
         // Chequea las condiciones para el ingreso del paciente
         if (paciente.getHoraLlegada() < 800 || paciente.getHoraLlegada() > 2000) {
-            System.out.println("El paciente " + paciente.getNombre() + 
+            ConsolaTXT.imprimirYguardar("El paciente " + paciente.getNombre() + 
             " llegó cuando el centro ya había cerrado, no puede ingresar.");
             return;
         }
         if (paciente.getEspecialista().equals("Odontólogo")){
             if (!odontologoHabilitado) {
-            System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + 
+            ConsolaTXT.imprimirYguardar("[" + reloj.formatearHora(reloj.getHoraActual()) + 
             "] El paciente " + paciente.getNombre() + 
             " no puede ingresar porque no hay odontólogos disponibles.");
-            return;
+            return ;
             } else {
                 pacientesOdontologia.put(paciente); // se encola según prioridad en Odontología
                 new Thread(paciente).start(); // Inicia el hilo del paciente
@@ -189,9 +189,9 @@ public class CentroMedico extends Thread{
 
     public void pacientesNoAtendidos() {
         // Imprime los pacientes que no fueron atendidos al finalizar la simulación
-        System.out.println("Pacientes no atendidos:");
+        ConsolaTXT.imprimirYguardar("Pacientes no atendidos:");
         for (Paciente paciente : colaPacientes) {
-            System.out.println("- " + paciente.getNombre() + " (Prioridad: " + paciente.getPrioridad() + 
+            ConsolaTXT.imprimirYguardar("- " + paciente.getNombre() + " (Prioridad: " + paciente.getPrioridad() + 
             ", Hora de llegada: " + RelojSimulado.formatearHora(paciente.getHoraLlegada()) + 
             ", Tipo de consulta: " + paciente.getTipoConsulta() + ")");
         }
@@ -236,7 +236,7 @@ public class CentroMedico extends Thread{
     @SuppressWarnings("static-access")
     @Override
     public void run() {
-        System.out.println("[08:00] Abre el Centro Médico" );
+        ConsolaTXT.imprimirYguardar("[08:00] Abre el Centro Médico" );
         while (reloj.getHoraActual() < 2000) { // Mientras el reloj no llegue a las 20:00
             reordenarCola();
             if (odontologoHabilitado) {
@@ -249,6 +249,7 @@ public class CentroMedico extends Thread{
             }
         }
         pacientesNoAtendidos(); // Imprime los pacientes que no fueron atendidos al finalizar la simulación
+        ConsolaTXT.cerrar();
     }
 }
 

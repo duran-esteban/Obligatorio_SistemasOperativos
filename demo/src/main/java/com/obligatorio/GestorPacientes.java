@@ -44,9 +44,9 @@ class GestorPacientes extends Thread {
                 pacientes.add(paciente);
             }
             else { // Si hay alguna línea mal escrita, avisa por consola 
-                System.out.println("Falló el formato de líneas, en la línea: " + renglonPaciente);
+                ConsolaTXT.imprimirYguardar("Falló el formato de líneas, en la línea: " + renglonPaciente);
             }
-        };
+        }
     }  
 
     // Bucle principal
