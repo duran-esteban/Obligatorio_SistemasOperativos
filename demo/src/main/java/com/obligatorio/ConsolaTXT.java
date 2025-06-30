@@ -29,7 +29,6 @@ public class ConsolaTXT {
                 System.out.println(mensaje);
             }
         } catch (Exception e) {
-            System.out.println("Error al escribir el log: " + e.getMessage());
         }
     }
 

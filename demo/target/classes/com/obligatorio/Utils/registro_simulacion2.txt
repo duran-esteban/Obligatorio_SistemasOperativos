@@ -1,0 +1,16 @@
+[08:00] Abre el Centro Médico
+[08:00] Reloj simulado iniciado
+[08:00] El paciente Pedro no puede ingresar porque no hay odontólogos disponibles.
+[08:05] Ingresó el paciente: Juan, Tipo de consulta: Carnet de salud, Prioridad: 8, Duración: 15 minutos.
+[08:05] Ingresó el paciente: Marcos, Tipo de consulta: Carnet de salud, Prioridad: 7, Duración: 15 minutos.
+[08:10] El paciente Marcos está siendo atendido por: Médico y Enfermero, Tipo de consulta: Carnet de salud
+[08:20] Ingresó el paciente: Ana, Tipo de consulta: Urgencia, Prioridad: 2, Duración: 10 minutos.
+[08:25] El paciente Marcos finalizó su consulta.
+[08:25] El paciente Ana está siendo atendido por: Médico y Enfermero, Tipo de consulta: Urgencia
+[08:35] El paciente Juan ahora tiene prioridad: 7
+[08:35] El paciente Ana finalizó su consulta.
+[08:40] El paciente Juan está siendo atendido por: Médico y Enfermero, Tipo de consulta: Carnet de salud
+[08:45] Ingresó el paciente: Luis, Tipo de consulta: Analisis, Prioridad: 9, Duración: 15 minutos.
+[08:55] El paciente Juan finalizó su consulta.
+[09:05] El paciente Luis está siendo atendido por: Enfermero, Tipo de consulta: Analisis
+[09:10] Ingresó el paciente: Carla, Tipo de consulta: Carnet de salud, Prioridad: 10, Duración: 10 minutos.

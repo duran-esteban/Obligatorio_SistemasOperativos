@@ -11,7 +11,7 @@ public class MainSimulador {
         CentroMedico centroMedico = new CentroMedico(1, 1, 0, reloj);
         GestorPacientes gestor = new GestorPacientes(reloj, 
         "demo\\src\\main\\java\\com\\obligatorio\\Utils\\PacientesSimulación1.txt", centroMedico);
-        ConsolaTXT.iniciar("demo\\src\\main\\java\\com\\obligatorio\\Utils\\registro_simulacion.txt", true);
+        ConsolaTXT.iniciar("demo\\src\\main\\java\\com\\obligatorio\\Utils\\registro_simulacion2.txt", true);
 
         centroMedico.start();
         gestor.start(); // Inicia el hilo del gestor de pacientes
