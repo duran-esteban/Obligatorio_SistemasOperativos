@@ -10,15 +10,19 @@ import com.obligatorio.Utils.ManejadorArchivosGenerico;
 class GestorPacientes extends Thread {
     private final RelojSimulado reloj;
     private final String archivoSimulacion;
+    private final CentroMedico centroMedico;
     private final List<Paciente> pacientes;
 
-    public GestorPacientes(RelojSimulado reloj, String archivoSimulacion) {
+    // Constructor
+    public GestorPacientes(RelojSimulado reloj, String archivoSimulacion, CentroMedico centroMedico) {
         this.reloj = reloj;
         this.archivoSimulacion = archivoSimulacion;
+        this.centroMedico = centroMedico;
         this.pacientes = new ArrayList<>();
         ProcesarPacientes();
     }
 
+    // Métodos
     private void ProcesarPacientes() {
         // Lee el archivo de la simulación según la ruta indicada y trasnforma sus líneas en una colección de strings
         String[] lineas = ManejadorArchivosGenerico.leerArchivo(archivoSimulacion);
@@ -36,21 +40,16 @@ class GestorPacientes extends Thread {
                 // Teniendo todos los datos, crea un nuevo objeto Paciente y lo agrega a la lista "pacientes"
                 // Los archivos de simulación tienen a los pacientes ordenados por hora de llegada, 
                 // por lo que la lista mantiene ese orden
-                Paciente paciente = new Paciente(nombre, horaLlegada, tipoConsulta, prioridad, duracion);
+                Paciente paciente = new Paciente(nombre, horaLlegada, tipoConsulta, prioridad, duracion, this.reloj);
                 pacientes.add(paciente);
             }
             else { // Si hay alguna línea mal escrita, avisa por consola 
                 System.out.println("Falló el formato de líneas, en la línea: " + renglonPaciente);
             }
         };
-    }
+    }  
 
-    private void imprimirPacientes() {
-        for (Paciente p : pacientes) {
-            p.imprimir();
-        }
-    }   
-
+    // Bucle principal
     public void run() {
         while (!pacientes.isEmpty()) {
             // Espera a que el reloj avance un tick
@@ -65,12 +64,12 @@ class GestorPacientes extends Thread {
             List<Paciente> bufferPacientesAEliminar = new ArrayList<Paciente>(); // Para evitar ConcurrentModificationException
             for (Paciente p : pacientes) {
                 if (p.getHoraLlegada() == tiempoActual) {
-                    new Thread(p).start(); // Inicia el hilo del paciente cuando es su hora de llegada
+                    centroMedico.ingresar(p); // Ingresa el paciente al centro médico
                     bufferPacientesAEliminar.add(p); // Agrega el paciente al buffer para eliminarlo después
                 }
             }
 
-            // Elimina los pacientes que ya fueron creados
+            // Elimina los pacientes que ya fueron creados de la lista "pacientes"
             for (Paciente p : bufferPacientesAEliminar) {
                 pacientes.remove(p);
             }
