@@ -145,7 +145,11 @@ class Paciente implements Runnable, Comparable<Paciente> {
 
     @SuppressWarnings("static-access")
     public void serAtendido() {
+        if (!this.vivo) {
+        return; // Si el paciente no está vivo, no puede ser atendido
+        }
         atendiendo = true;
+
         System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
                            " está siendo atendido por: " + this.getEspecialista() +
                            ", Tipo de consulta: " + this.tipoConsulta);
@@ -185,7 +189,7 @@ class Paciente implements Runnable, Comparable<Paciente> {
                            + ", Tipo de consulta: " + this.tipoConsulta + ", Prioridad: " + this.prioridad
                            + ", Duración: " + this.ticksDuracion * RelojSimulado.getEquivalenciaTick() + " minutos.");
 
-        while (ticksDuracion > 0 && vivo) {
+        while (ticksDuracion > 0 && this.vivo) {
             // Decide a qué cola de pacientes ir (general u odontología)
             if (this.getEspecialista().equals("Odontólogo")) {  // Cola odontología
                 // Mientras no sea su turno (no sea el más prioritario, el valor más bajo), espera un tick
