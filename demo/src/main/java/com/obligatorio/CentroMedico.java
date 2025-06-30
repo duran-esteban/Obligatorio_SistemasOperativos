@@ -4,37 +4,46 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.Semaphore;
 
 public class CentroMedico {
-    private final PriorityBlockingQueue<Paciente> cola = new PriorityBlockingQueue<>();
-    private static final Semaphore medico = new Semaphore(1);
-    private static final Semaphore enfermero = new Semaphore(1);
-    private static int prioridadMaxActual;
-    private Paciente pacienteActual = null;
+    private static RelojSimulado reloj;
+
+    static Semaphore medico;
+    static Semaphore enfermero;
+    static Semaphore odontologo;
     
-
-    public void ingresar(Paciente paciente) {
-        cola.put(paciente); // se encola según prioridad
+    private final PriorityBlockingQueue<Paciente> colaPacientes;
+    private static Paciente pacienteActual;
+    private static int prioridadMaxActual;
+    
+    // Constructor
+    public CentroMedico(int medicos, int enfermeros, int odontologos, RelojSimulado relojReferencia) {
+        reloj = relojReferencia;
+        medico = new Semaphore(medicos);
+        enfermero = new Semaphore(enfermeros);
+        odontologo = new Semaphore(odontologos);
+        colaPacientes = new PriorityBlockingQueue<>();
+        prioridadMaxActual = 0;
+        pacienteActual = null;
     }
 
-    public void atenderPacientes() {
-        while (true) {
-            Paciente paciente = cola.take();
-            // lógica para asignar recurso y atender según especialidad
-        }
-    }
-
+    // Getters
     public static int getPrioridadMaxActual() {
         return prioridadMaxActual;
     }
 
+    // Métodos
+    public void ingresar(Paciente paciente) {
+        colaPacientes.put(paciente); // se encola según prioridad
+    }
+
     public void reordenarCola() {
         PriorityBlockingQueue<Paciente> nuevaCola = new PriorityBlockingQueue<>();
-        while (!cola.isEmpty()) {
-            Paciente paciente = cola.poll();
-            paciente.aumentarPrioridadSiEsUrgente(RelojSimulado.getHoraActual());
+        while (!colaPacientes.isEmpty()) {
+            Paciente paciente = colaPacientes.poll();
+            paciente.recalcularPrioridad(reloj.getHoraActual());
             nuevaCola.put(paciente);
         }
-        cola.clear();
-        cola.addAll(nuevaCola);
+        colaPacientes.clear();
+        colaPacientes.addAll(nuevaCola);
     }
 }
 
