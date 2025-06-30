@@ -14,14 +14,14 @@ class RelojSimulado extends Thread {
     // Constructores
     public RelojSimulado() {
         super("Reloj Simulado");
-        this.frecuenciaTick = 1000; // 1 segundo por defecto
-        this.equivalenciaTick = 5; // 5 minutos por defecto
+        frecuenciaTick = 1000; // 1 segundo por defecto
+        equivalenciaTick = 5; // 5 minutos por defecto
     }
 
-    public RelojSimulado(int frecuenciaTick, int equivalenciaTick) {
+    public RelojSimulado(int frecuenciaTickIngresada, int equivalenciaTickIngresada) {
         super("Reloj Simulado");
-        this.frecuenciaTick = frecuenciaTick;
-        this.equivalenciaTick = equivalenciaTick;
+        frecuenciaTick = frecuenciaTickIngresada;
+        equivalenciaTick = equivalenciaTickIngresada;
     }
 
     // Getters
@@ -64,7 +64,7 @@ class RelojSimulado extends Thread {
 
     // Bucle principal
     public void run() {
-        System.out.println("[08:00] Reloj simulado iniciado. Abre el Centro Médico" );
+        System.out.println("[08:00] Reloj simulado iniciado" );
         while (horaActual < 2000) { // hasta las 20:00
             try {
                 Thread.sleep(frecuenciaTick); // Pasa un tick

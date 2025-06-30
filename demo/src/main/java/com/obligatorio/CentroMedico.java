@@ -12,8 +12,10 @@ public class CentroMedico extends Thread{
     static Semaphore odontologo;
     static boolean odontologoHabilitado;
     
+    private PriorityBlockingQueue<Paciente> pacientesOdontologia = null;
     private final PriorityBlockingQueue<Paciente> colaPacientes;
     private static ArrayList<Paciente> pacientesAtendiendo;
+    private static int prioridadMaxOdontologia;
     private static int prioridadMaxActual;
     
     // Constructor
@@ -28,6 +30,8 @@ public class CentroMedico extends Thread{
 
         if (odontologos > 0) {
             odontologoHabilitado = true;
+            prioridadMaxOdontologia = 0;
+            pacientesOdontologia = new PriorityBlockingQueue<>();
         } else {
             odontologoHabilitado = false;
         }
@@ -36,6 +40,10 @@ public class CentroMedico extends Thread{
     // Getters
     public static int getPrioridadMaxActual() {
         return prioridadMaxActual;
+    }
+
+    public static int getPrioridadMaxOdontologia() {
+        return prioridadMaxOdontologia;
     }
 
     public PriorityBlockingQueue<Paciente> getColaPacientes() {
@@ -51,6 +59,7 @@ public class CentroMedico extends Thread{
     }
 
     // Métodos
+    @SuppressWarnings("static-access")
     public void ingresar(Paciente paciente) {
         // Chequea las condiciones para el ingreso del paciente
         if (paciente.getHoraLlegada() < 800 || paciente.getHoraLlegada() > 2000) {
@@ -58,24 +67,38 @@ public class CentroMedico extends Thread{
             " llegó cuando el centro ya había cerrado, no puede ingresar.");
             return;
         }
-        if (paciente.getEspecialista().equals("Odontólogo") && !odontologoHabilitado) {
+        if (paciente.getEspecialista().equals("Odontólogo")){
+            if (!odontologoHabilitado) {
             System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + 
-            "] No hay odontólogos disponibles, el paciente " + paciente.getNombre() + 
-            " no puede ingresar.");
+            "] El paciente " + paciente.getNombre() + 
+            " no puede ingresar porque no hay odontólogos disponibles.");
             return;
+            } else {
+                pacientesOdontologia.put(paciente); // se encola según prioridad en Odontología
+                new Thread(paciente).start(); // Inicia el hilo del paciente
+            }
+        } else {
+            colaPacientes.put(paciente); // se encola según prioridad en la cola general
+            new Thread(paciente).start(); // Inicia el hilo del paciente
         }
-        colaPacientes.put(paciente); // se encola según prioridad
-        new Thread(paciente).start(); // Inicia el hilo del paciente
     }
 
     public void reordenarCola() {
         // Actualiza la cola de pacientes, recalculando prioridades y eliminando
-        // pacientes que ya no deberían estar (paceintes ya atendidos por completo o fallecidos)
+        // pacientes que ya no deberían estar (pacientes ya atendidos por completo o fallecidos)
         PriorityBlockingQueue<Paciente> nuevaCola = new PriorityBlockingQueue<>();
         while (!colaPacientes.isEmpty()) {
             Paciente paciente = colaPacientes.poll();
             if (paciente.getTicksDuracion() > 0 && paciente.getEstaVivo()) {
                 paciente.recalcularPrioridad(reloj.getHoraActual());
+                
+                // Espera a que el paciente haya actualizado su prioridad 
+                // antes de añadirlo ordenadamente a la cola
+                try {
+                    paciente.actualizado.acquire();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 nuevaCola.put(paciente);
             }
         }
@@ -87,6 +110,7 @@ public class CentroMedico extends Thread{
         chequearInterrupcionNuevoPrioritario();
     }
 
+    @SuppressWarnings("static-access")
     private void actualizarPrioridadMaxActual() {
         // Toma como prioridad máxima la del paciente con mayor prioridad en la cola
         if (!colaPacientes.isEmpty()) {
@@ -99,6 +123,7 @@ public class CentroMedico extends Thread{
             return;
         }
         PriorityBlockingQueue<Paciente> copiaCola = new PriorityBlockingQueue<>(this.colaPacientes);
+        @SuppressWarnings("static-access")
         int cantidadIteraciones = this.pacientesAtendiendo.size();
 
         // Toma los primeros X pacientes de la cola (donde X es la cantidad de pacientes que están siendo atendidos)
@@ -139,7 +164,6 @@ public class CentroMedico extends Thread{
         }
         return pacienteMenosPrioritario;
     }
-    
 
     public void pacientesNoAtendidos() {
         // Imprime los pacientes que no fueron atendidos al finalizar la simulación
@@ -150,11 +174,52 @@ public class CentroMedico extends Thread{
             ", Tipo de consulta: " + paciente.getTipoConsulta() + ")");
         }
     }
+    
+    // Métodos Odontología
+    public void reordenarPacientesOdontologia() {
+        // Actualiza la cola de pacientes del odontólogo, recalculando prioridades y eliminando
+        // pacientes que ya no deberían estar (pacientes ya atendidos por completo)
+        PriorityBlockingQueue<Paciente> nuevaCola = new PriorityBlockingQueue<>();
+        while (!pacientesOdontologia.isEmpty()) {
+            Paciente paciente = pacientesOdontologia.poll();
+            if (paciente.getTicksDuracion() > 0) {
+                paciente.recalcularPrioridad(reloj.getHoraActual());
+                
+                // Espera a que el paciente haya actualizado su prioridad 
+                // antes de añadirlo ordenadamente a la cola
+                try {
+                    paciente.actualizado.acquire();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                nuevaCola.put(paciente);
+            }
+        }
+        pacientesOdontologia.clear();
+        pacientesOdontologia.addAll(nuevaCola);
 
+        actualizarPrioridadMaxOdontologia();
+        // No hace interrupciones porque las consultas odontológicas deberían ser cortas y no urgentes
+    }
+
+    @SuppressWarnings("static-access")
+    private void actualizarPrioridadMaxOdontologia() {
+        // Toma como prioridad máxima la del paciente con mayor prioridad en la cola
+        if (!pacientesOdontologia.isEmpty()) {
+            this.prioridadMaxOdontologia = pacientesOdontologia.peek().getPrioridad();
+        }
+    }
+
+    // Bucle principal
+    @SuppressWarnings("static-access")
     @Override
     public void run() {
+        System.out.println("[08:00] Abre el Centro Médico" );
         while (reloj.getHoraActual() < 2000) { // Mientras el reloj no llegue a las 20:00
             reordenarCola();
+            if (odontologoHabilitado) {
+                reordenarPacientesOdontologia();
+            }
             try {
                 Thread.sleep(reloj.getFrecuenciaTick()); // Reordena la cola cada tick
             } catch (InterruptedException e) {
