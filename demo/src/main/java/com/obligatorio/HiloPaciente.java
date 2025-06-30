@@ -40,6 +40,10 @@ class Paciente implements Runnable, Comparable<Paciente> {
         return horaLlegada;
     }
 
+    public int getPrioridad() {
+        return prioridad;
+    }
+
     public String getEspecialista() {
         String consultaMinuscula = this.tipoConsulta.toLowerCase();
 
@@ -88,7 +92,7 @@ class Paciente implements Runnable, Comparable<Paciente> {
             if (minutosEsperando >= 10) {
                 prioridad = 0; // Emergencia, no cambia
                 this.vivo = false;
-                System.out.println("[" + reloj.getHoraActual() + "] El paciente " + this.nombre +
+                System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
                                    " ha fallecido tras esperar más de 10 minutos por su emergencia.");
             } 
         } 
@@ -97,37 +101,37 @@ class Paciente implements Runnable, Comparable<Paciente> {
             if (esperaTotal >= 110) {
                 prioridadOriginal = 0;
                 prioridad = 0; // Emergencia
-                System.out.println("[" + reloj.getHoraActual() + "] El paciente " + this.nombre +
+                System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
                                    " lleva esperando 110 minutos o más. Ahora es una emergencia.");
             } 
             // Cada 15 minutos, aumenta la prioridad, con prioridad máxima 1
             if (minutosEsperando >= 15 && prioridad != 1) {
-                prioridad = -1; 
+                prioridad -= 1; 
                 this.horaUltimaActualizacion = horaActual;
-                System.out.println("[" + reloj.getHoraActual() + "] El paciente " + this.nombre +
-                                   "ahora tiene prioridad: " + prioridad);
+                System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
+                                   " ahora tiene prioridad: " + prioridad);
             }
         } 
         else if (prioridadOriginal <= 10) {   // Consulta normal (prioridad 6 a 10)
             // Cada 30 minutos, aumenta la prioridad, con prioridad máxima 6
             if (minutosEsperando >= 30 && prioridad != 6) {
-                prioridad = -1;
+                prioridad -= 1;
                 this.horaUltimaActualizacion = horaActual;
-                System.out.println("[" + reloj.getHoraActual() + "] El paciente " + this.nombre +
-                                   "ahora tiene prioridad: " + prioridad);
+                System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
+                                   " ahora tiene prioridad: " + prioridad);
             } 
         } 
     }
 
     public void serAtendido() {
         atendido = true;
-        System.out.println("[" + reloj.getHoraActual() + "] El paciente " + this.nombre +
+        System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
                            " está siendo atendido por: " + this.getEspecialista() +
                            ", Tipo de consulta: " + this.tipoConsulta);
 
         while (ticksDuracion > 0 && atendido) {
             if (interrumpido) {
-                System.out.println("[" + reloj.getHoraActual() + "] La consulta del paciente " + this.nombre +
+                System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] La consulta del paciente " + this.nombre +
                                    " ha sido interrumpida.");
                 this.interrumpido = false; // Resetea el estado de interrumpido
                 return; // Sale del método
@@ -142,7 +146,7 @@ class Paciente implements Runnable, Comparable<Paciente> {
             }
         }
         if (ticksDuracion == 0) {
-            System.out.println("[" + reloj.getHoraActual() + "] El paciente " + this.nombre +
+            System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
                                " finalizó su consulta.");
         }
     }
@@ -202,7 +206,7 @@ class Paciente implements Runnable, Comparable<Paciente> {
                         }
                         break;
                     case "Desconocido":
-                        System.out.println("[" + reloj.getHoraActual() + "] El paciente " + this.nombre +
+                        System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
                                            " no tiene un especialista asignado, no puede ser atendido.");
                         return; // Sale del bucle y termina el hilo
                 }

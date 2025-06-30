@@ -41,6 +41,10 @@ public class CentroMedico {
         return prioridadMaxActual;
     }
 
+    public PriorityBlockingQueue<Paciente> getColaPacientes() {
+        return colaPacientes;
+    }
+
     public static void setPacienteActual(String especialista, Paciente paciente) {
         switch (especialista) {
             case "Médico y Enfermero":
@@ -67,7 +71,8 @@ public class CentroMedico {
             return;
         }
         if (paciente.getEspecialista().equals("Odontólogo") && !odontologoHabilitado) {
-            System.out.println("No hay odontólogos disponibles, el paciente " + paciente.getNombre() + 
+            System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + 
+            "] No hay odontólogos disponibles, el paciente " + paciente.getNombre() + 
             " no puede ingresar.");
             return;
         }
@@ -84,6 +89,34 @@ public class CentroMedico {
         }
         colaPacientes.clear();
         colaPacientes.addAll(nuevaCola);
+
+        actualizarPrioridadMaxActual();
+    }
+
+    private void actualizarPrioridadMaxActual() {
+        // Toma como prioridad máxima la del paciente con mayor prioridad en la cola
+        if (!colaPacientes.isEmpty()) {
+            this.prioridadMaxActual = colaPacientes.peek().getPrioridad();
+        }
+    }
+
+    private void chequearPrioridadIngresoVsActual() {
+        // Si el paciente que ingresa tiene una prioridad mayor a la máxima actual, 
+        // interrumpe la consulta del paciente actual
+        int prioridadPacienteTopCola = colaPacientes.peek().getPrioridad();
+        if (prioridadPacienteTopCola > pacienteActualMedico.getPrioridad()) {
+            pacienteActualMedico.interrumpirConsulta();
+        }
+    }
+
+    public void pacientesNoAtendidos() {
+        // Imprime los pacientes que no fueron atendidos al finalizar la simulación
+        System.out.println("Pacientes no atendidos:");
+        for (Paciente paciente : colaPacientes) {
+            System.out.println("- " + paciente.getNombre() + " (Prioridad: " + paciente.getPrioridad() + 
+            ", Hora de llegada: " + RelojSimulado.formatearHora(paciente.getHoraLlegada()) + 
+            ", Tipo de consulta: " + paciente.getTipoConsulta() + ")");
+        }
     }
 }
 
