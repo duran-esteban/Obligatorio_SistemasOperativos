@@ -7,6 +7,12 @@ import java.util.concurrent.Semaphore;
 public class CentroMedico extends Thread{
     private static RelojSimulado reloj;
 
+    public static final Semaphore mutexAtencionGeneral = new Semaphore(1); // Exclusión mutua para atención general
+    public static final Semaphore mutexAtencionOdontologia = new Semaphore(1); // Exclusión mutua para atención odontológica
+    private static final Object lockPrioridadOdontologia = new Object(); // Para proteger prioridadMaxOdontologia
+    private static final Object lockPrioridadGeneral = new Object(); // Para proteger prioridadMaxActual
+    
+
     static Semaphore medico;
     static Semaphore enfermero;
     static Semaphore odontologo;
@@ -39,15 +45,15 @@ public class CentroMedico extends Thread{
 
     // Getters
     public static int getPrioridadMaxActual() {
-        return prioridadMaxActual;
+        synchronized (lockPrioridadGeneral) {
+            return prioridadMaxActual;
+        }
     }
 
-    public static int getPrioridadMaxOdontologia() {
-        return prioridadMaxOdontologia;
-    }
-
-    public PriorityBlockingQueue<Paciente> getColaPacientes() {
-        return colaPacientes;
+    private static void setPrioridadMaxActual(int nuevaPrioridad) {
+        synchronized (lockPrioridadGeneral) {
+            prioridadMaxActual = nuevaPrioridad;
+        }
     }
 
     public static void añadirPacienteAtendiendo(Paciente paciente) {
@@ -56,6 +62,22 @@ public class CentroMedico extends Thread{
 
     public static void eliminarPacienteAtendiendo(Paciente paciente) {
         pacientesAtendiendo.remove(paciente);
+    }
+
+    public PriorityBlockingQueue<Paciente> getColaPacientes() {
+        return colaPacientes;
+    }
+
+    public static int getPrioridadMaxOdontologia() {
+        synchronized (lockPrioridadOdontologia) {
+            return prioridadMaxOdontologia;
+        }
+    }
+
+    private static void setPrioridadMaxOdontología(int nuevaPrioridad) {
+        synchronized (lockPrioridadOdontologia) {
+            prioridadMaxActual = nuevaPrioridad;
+        }
     }
 
     // Métodos
@@ -114,7 +136,7 @@ public class CentroMedico extends Thread{
     private void actualizarPrioridadMaxActual() {
         // Toma como prioridad máxima la del paciente con mayor prioridad en la cola
         if (!colaPacientes.isEmpty()) {
-            this.prioridadMaxActual = colaPacientes.peek().getPrioridad();
+            setPrioridadMaxActual(colaPacientes.peek().getPrioridad());
         }
     }
 
@@ -206,7 +228,7 @@ public class CentroMedico extends Thread{
     private void actualizarPrioridadMaxOdontologia() {
         // Toma como prioridad máxima la del paciente con mayor prioridad en la cola
         if (!pacientesOdontologia.isEmpty()) {
-            this.prioridadMaxOdontologia = pacientesOdontologia.peek().getPrioridad();
+            setPrioridadMaxOdontología(pacientesOdontologia.peek().getPrioridad());
         }
     }
 

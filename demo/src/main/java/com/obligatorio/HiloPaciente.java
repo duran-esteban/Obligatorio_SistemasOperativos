@@ -196,15 +196,25 @@ class Paciente implements Runnable, Comparable<Paciente> {
                         Thread.currentThread().interrupt();
                     }
                 }
+                // Si cumple los requisitos para ser atendido, intenta ser atendido
+                try {
+                    CentroMedico.mutexAtencionOdontologia.acquire();
                 // Cuando sí es su turno con el odontólogo, pasa a ser atendido
                 if (prioridad <= CentroMedico.getPrioridadMaxOdontologia()) {
                     try {
                         CentroMedico.odontologo.acquire();
+                        CentroMedico.mutexAtencionOdontologia.release(); // Libera mutex apenas ya tomó el turno
                         serAtendido();
                         CentroMedico.odontologo.release();
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
+                }else {
+                        CentroMedico.mutexAtencionOdontologia.release(); // No le toca, libera el mutex
+                    }
+
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
             } 
             else {  // Cola general
@@ -216,40 +226,49 @@ class Paciente implements Runnable, Comparable<Paciente> {
                         Thread.currentThread().interrupt();
                     }
                 }
-                // Si es su turno, pasa a ser atendido
-                if (prioridad <= CentroMedico.getPrioridadMaxActual()) {
-                    switch (this.getEspecialista()) {
-                        case "Médico y Enfermero":
-                            try {
+                // Si cumple los requisitos para ser atendido, intenta ser atendido
+                try {
+                    CentroMedico.mutexAtencionGeneral.acquire();
+
+                    if (this.getPrioridad() <= CentroMedico.getPrioridadMaxActual()) {
+                        switch (this.getEspecialista()) {
+                            case "Médico y Enfermero":
                                 CentroMedico.medico.acquire(); 
                                 CentroMedico.enfermero.acquire();
                                 CentroMedico.añadirPacienteAtendiendo(this);
+                                CentroMedico.mutexAtencionGeneral.release(); // Libera mutex apenas ya tomó el turno
+
                                 serAtendido();
+
                                 CentroMedico.eliminarPacienteAtendiendo(this);
                                 CentroMedico.medico.release();
                                 CentroMedico.enfermero.release();
-                            } catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();
-                            } break;
+                                break;
 
-                        case "Enfermero":
-                            try {
+                            case "Enfermero":
                                 CentroMedico.enfermero.acquire();
                                 CentroMedico.añadirPacienteAtendiendo(this);
+                                CentroMedico.mutexAtencionGeneral.release(); // Libera mutex apenas ya tomó el turno
+
                                 serAtendido();
+
                                 CentroMedico.eliminarPacienteAtendiendo(this);
                                 CentroMedico.enfermero.release();
-                            } 
-                            catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();
-                            } break;
+                                break;
 
-                        case "Desconocido":
-                            System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
-                                            " no tiene un especialista asignado, no puede ser atendido.");
-                            return; // Sale del bucle y termina el hilo
+                            case "Desconocido":
+                                System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
+                                        " no tiene un especialista asignado, no puede ser atendido.");
+                                CentroMedico.mutexAtencionGeneral.release();
+                                return;
+                        }
+                    } else {
+                        CentroMedico.mutexAtencionGeneral.release(); // No le toca, libera el mutex
                     }
-                } 
+
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
             }
         }
     }
