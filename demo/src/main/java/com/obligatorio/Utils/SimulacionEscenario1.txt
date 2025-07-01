@@ -1,36 +1,50 @@
-0810;Paciente1;emergencia;0;3
-0825;Paciente2;urgencia;5;4
-0840;Paciente3;carné de salud;9;5
-0910;Paciente4;emergencia;0;3
-0945;Paciente5;urgencia;5;4
-0945;Paciente6;curación;9;2
-1000;Paciente7;emergencia;0;3
-1000;Paciente8;urgencia;5;4
-1025;Paciente9;curación;9;2
-1100;Paciente10;emergencia;0;3
-1140;Paciente11;urgencia;5;4
-1140;Paciente12;análisis de sangre;9;2
-1200;Paciente13;emergencia;0;3
-1225;Paciente14;urgencia;5;4
-1225;Paciente15;curación;9;2
-1305;Paciente16;emergencia;0;3
-1310;Paciente17;urgencia;5;4
-1330;Paciente18;análisis de sangre;9;2
-1410;Paciente19;emergencia;0;3
-1425;Paciente20;urgencia;5;4
-1430;Paciente21;curación;9;2
-1525;Paciente22;emergencia;0;3
-1535;Paciente23;urgencia;5;4
-1550;Paciente24;análisis de orina;9;2
-1600;Paciente25;emergencia;0;3
-1620;Paciente26;urgencia;5;4
-1635;Paciente27;análisis de sangre;9;2
-1700;Paciente28;emergencia;0;3
-1705;Paciente29;urgencia;5;4
-1720;Paciente30;análisis de sangre;9;2
-1810;Paciente31;emergencia;0;3
-1815;Paciente32;urgencia;5;4
-1830;Paciente33;carné de salud;9;5
-1900;Paciente34;emergencia;0;3
-1915;Paciente35;urgencia;5;4
-1925;Paciente36;curación;9;2
+0800;Paciente1;emergencia;0;3
+0810;Paciente2;urgencia;5;4
+0820;Paciente3;curacion;9;2
+0835;Paciente4;emergencia;0;3
+0845;Paciente5;urgencia;5;4
+0900;Paciente6;analisis de sangre;9;2
+0915;Paciente7;emergencia;0;3
+0925;Paciente8;urgencia;5;4
+0935;Paciente9;carne de salud;9;5
+0945;Paciente10;emergencia;0;3
+0955;Paciente11;urgencia;5;4
+1000;Paciente12;analisis de orina;9;2
+1010;Paciente13;emergencia;0;3
+1025;Paciente14;urgencia;5;4
+1035;Paciente15;analisis de sangre;9;2
+1045;Paciente16;emergencia;0;3
+1100;Paciente17;urgencia;5;4
+1110;Paciente18;curacion;9;2
+1125;Paciente19;emergencia;0;3
+1135;Paciente20;urgencia;5;4
+1145;Paciente21;carne de salud;9;5
+1200;Paciente22;emergencia;0;3
+1215;Paciente23;urgencia;5;4
+1230;Paciente24;analisis de sangre;9;2
+1305;Paciente25;emergencia;0;3
+1315;Paciente26;urgencia;5;4
+1325;Paciente27;curacion;9;2
+1340;Paciente28;emergencia;0;3
+1355;Paciente29;urgencia;5;4
+1410;Paciente30;analisis de orina;9;2
+1425;Paciente31;emergencia;0;3
+1440;Paciente32;urgencia;5;4
+1455;Paciente33;carne de salud;9;5
+1510;Paciente34;emergencia;0;3
+1525;Paciente35;urgencia;5;4
+1535;Paciente36;analisis de sangre;9;2
+1600;Paciente37;curacion;9;2
+1615;Paciente38;emergencia;0;3
+1630;Paciente39;urgencia;5;4
+1645;Paciente40;analisis de orina;9;2
+1700;Paciente41;emergencia;0;3
+1715;Paciente42;urgencia;5;4
+1725;Paciente43;curacion;9;2
+1740;Paciente44;emergencia;0;3
+1755;Paciente45;urgencia;5;4
+1805;Paciente46;analisis de sangre;9;2
+1820;Paciente47;emergencia;0;3
+1835;Paciente48;urgencia;5;4
+1905;Paciente49;carne de salud;9;5
+1925;Paciente50;curacion;9;2
