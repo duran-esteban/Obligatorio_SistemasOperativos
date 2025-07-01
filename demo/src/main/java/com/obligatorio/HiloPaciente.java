@@ -162,12 +162,7 @@ class Paciente implements Runnable, Comparable<Paciente> {
         return; // Si el paciente no está vivo, no puede ser atendido
         }
         atendiendo = true;
-<<<<<<< HEAD
-
-        System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
-=======
         ConsolaTXT.imprimirYguardar("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
->>>>>>> 1fa4dc210ae920338075cb81f42cf939414244c5
                            " está siendo atendido por: " + this.getEspecialista() +
                            ", Tipo de consulta: " + this.tipoConsulta);
 
