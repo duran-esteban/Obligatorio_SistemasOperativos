@@ -1,1 +1,7 @@
-
+[08:00] Abre el Centro Médico
+[08:00] Reloj simulado iniciado
+[08:00] Ingresó el paciente: Paciente1, Tipo de consulta: urgencia, Prioridad: 5, Duración: 15 minutos.
+[08:05] El paciente Paciente1 está siendo atendido por: Médico y Enfermero, Tipo de consulta: urgencia
+[08:20] Ingresó el paciente: Paciente2, Tipo de consulta: urgencia, Prioridad: 5, Duración: 20 minutos.
+[08:20] El paciente Paciente1 finalizó su consulta.
+[08:20] El paciente Paciente2 está siendo atendido por: Médico y Enfermero, Tipo de consulta: urgencia
