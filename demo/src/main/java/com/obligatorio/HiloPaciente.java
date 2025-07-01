@@ -35,6 +35,25 @@ class Paciente implements Runnable, Comparable<Paciente> {
         return nombre;
     }
 
+    public void atender() {
+        atendiendo = true;
+        while (ticksDuracion > 0) {
+            try {
+                Thread.sleep(RelojSimulado.getFrecuenciaTick()); // Duerme durante un tick (Por defecto, 1 segundo)
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            ticksDuracion--;
+            
+        }
+        // se va del centro
+    }
+
+    @Override
+    public int compareTo (Paciente otro) {
+        return Integer.compare(this.prioridad, otro.prioridad);
+    }
+
     public String getTipoConsulta() {
         return tipoConsulta;
     }
@@ -80,12 +99,6 @@ class Paciente implements Runnable, Comparable<Paciente> {
         }
     }
 
-    // Métodos
-    @Override
-    public int compareTo(Paciente otro) {
-        return Integer.compare(this.prioridad, otro.prioridad);
-    }
-
     private int convertirHoraAMinutos(int hora) {
         int horas = hora / 100;
         int minutos = hora % 100;
@@ -110,7 +123,7 @@ class Paciente implements Runnable, Comparable<Paciente> {
             if (minutosEsperando >= 10) {
                 prioridad = 0; // Emergencia, no cambia
                 this.vivo = false;
-                System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
+                ConsolaTXT.imprimirYguardar("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
                                    " ha fallecido tras esperar más de 10 minutos por su emergencia.");
             } 
         } 
@@ -119,14 +132,14 @@ class Paciente implements Runnable, Comparable<Paciente> {
             if (esperaTotal >= 110) {
                 prioridadOriginal = 0;
                 prioridad = 0; // Emergencia
-                System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
+                ConsolaTXT.imprimirYguardar("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
                                    " lleva esperando 110 minutos o más. Ahora es una emergencia.");
             } 
             // Cada 15 minutos, aumenta la prioridad, con prioridad máxima 1
             if (minutosEsperando >= 15 && prioridad != 1) {
                 prioridad -= 1; 
                 this.horaUltimaActualizacion = horaActual;
-                System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
+                ConsolaTXT.imprimirYguardar("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
                                    " ahora tiene prioridad: " + prioridad);
             }
         } 
@@ -135,7 +148,7 @@ class Paciente implements Runnable, Comparable<Paciente> {
             if (minutosEsperando >= 30 && prioridad != 6) {
                 prioridad -= 1;
                 this.horaUltimaActualizacion = horaActual;
-                System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
+                ConsolaTXT.imprimirYguardar("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
                                    " ahora tiene prioridad: " + prioridad);
             } 
         }
@@ -149,14 +162,18 @@ class Paciente implements Runnable, Comparable<Paciente> {
         return; // Si el paciente no está vivo, no puede ser atendido
         }
         atendiendo = true;
+<<<<<<< HEAD
 
         System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
+=======
+        ConsolaTXT.imprimirYguardar("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
+>>>>>>> 1fa4dc210ae920338075cb81f42cf939414244c5
                            " está siendo atendido por: " + this.getEspecialista() +
                            ", Tipo de consulta: " + this.tipoConsulta);
 
         while (ticksDuracion > 0 && atendiendo) {
             if (interrumpido) {
-                System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] La consulta del paciente " + this.nombre +
+                ConsolaTXT.imprimirYguardar("[" + reloj.formatearHora(reloj.getHoraActual()) + "] La consulta del paciente " + this.nombre +
                                    " ha sido interrumpida.");
                 this.atendiendo = false; // Marca que ya no está siendo atendido
                 this.interrumpido = false; // Resetea el estado de interrumpido
@@ -172,7 +189,7 @@ class Paciente implements Runnable, Comparable<Paciente> {
             }
         }
         if (ticksDuracion == 0) {
-            System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
+            ConsolaTXT.imprimirYguardar("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
                                " finalizó su consulta.");
         }
     }
@@ -185,7 +202,7 @@ class Paciente implements Runnable, Comparable<Paciente> {
     @SuppressWarnings("static-access")
     public void run() {
         // Avisa que llegó al centro médico
-        System.out.println("[" + RelojSimulado.formatearHora(this.horaLlegada) + "] Ingresó el paciente: " + this.nombre
+        ConsolaTXT.imprimirYguardar("[" + RelojSimulado.formatearHora(this.horaLlegada) + "] Ingresó el paciente: " + this.nombre
                            + ", Tipo de consulta: " + this.tipoConsulta + ", Prioridad: " + this.prioridad
                            + ", Duración: " + this.ticksDuracion * RelojSimulado.getEquivalenciaTick() + " minutos.");
 
@@ -261,7 +278,7 @@ class Paciente implements Runnable, Comparable<Paciente> {
                                 break;
 
                             case "Desconocido":
-                                System.out.println("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
+                                ConsolaTXT.imprimirYguardar("[" + reloj.formatearHora(reloj.getHoraActual()) + "] El paciente " + this.nombre +
                                         " no tiene un especialista asignado, no puede ser atendido.");
                                 CentroMedico.mutexAtencionGeneral.release();
                                 return;
@@ -275,6 +292,42 @@ class Paciente implements Runnable, Comparable<Paciente> {
                 }
             }
         }
+    }
+
+    public boolean actualizarPrioridad(int tiempoActual) {
+        int llegadaMin = (horaLlegada / 100) * 60 + (horaLlegada % 100) ;
+        int actualMin = (tiempoActual / 100) * 60 + (tiempoActual % 100);
+        int minutosEsperando = actualMin - llegadaMin;
+
+        if (prioridad == 0) {
+            if (minutosEsperando > 10) {
+                ConsolaTXT.imprimirYguardar(nombre + " no fue atendido en 10 minuos y perecio :c");
+                return true;
+            }
+        
+        } else if (prioridad >= 1 && prioridad <= 5) {
+            if (minutosEsperando >= 120) {
+                ConsolaTXT.imprimirYguardar(nombre + ", ahora es una emergencia");
+                prioridad = 0;
+            } else {
+                int subida = minutosEsperando / 20;
+                int nuevaPrioridad = prioridad - subida;
+                if (nuevaPrioridad < 1) nuevaPrioridad = 1;
+                if (nuevaPrioridad < prioridad) {
+                    ConsolaTXT.imprimirYguardar(nombre + " subio prioridad de: " + prioridad + " a " + nuevaPrioridad);
+                    prioridad = nuevaPrioridad;
+                }
+            }
+        } else if (prioridad >= 6 && prioridad <= 10) {
+            int subida = minutosEsperando / 45;
+            int nuevaPrioridad = prioridad - subida;
+            if (nuevaPrioridad < 5) nuevaPrioridad = 5;   
+            if (nuevaPrioridad < prioridad) {
+            ConsolaTXT.imprimirYguardar(nombre + " subio prioridad de: " + prioridad + " a " + nuevaPrioridad);
+            prioridad = nuevaPrioridad;
+        }
+    }
+    return false; 
     }
 }
 
