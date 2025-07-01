@@ -83,15 +83,15 @@ class Paciente implements Runnable, Comparable<Paciente> {
 
         if (consultaMinuscula.contains("emergencia") 
             || consultaMinuscula.contains("urgencia")
-            || consultaMinuscula.contains("carné de salud")) {
+            || consultaMinuscula.contains("carne de salud")) {
             return "Médico y Enfermero";
         } 
-        else if (consultaMinuscula.contains("análisis") 
-            || consultaMinuscula.contains("curación") 
+        else if (consultaMinuscula.contains("analisis") 
+            || consultaMinuscula.contains("curacion") 
             || consultaMinuscula.contains("examen") ) {
             return "Enfermero";
         } 
-        else if (consultaMinuscula.contains("odontológica")) {
+        else if (consultaMinuscula.contains("odontologica")) {
             return "Odontólogo";
         } 
         else {
